@@ -41,6 +41,7 @@
 @property (strong, nonatomic, nonnull) NSArray <OSInAppMessage *> *messages;
 @property (strong, nonatomic, nonnull) OSTriggerController *triggerController;
 @property (strong, nonatomic, nonnull) NSMutableArray <OSInAppMessage *> *messageDisplayQueue;
+@property (nonatomic, nullable) NSObject<OSInAppMessagePrompt>*currentPromptAction;
 @end
 
 @implementation OSMessagingController (Tests)
@@ -50,6 +51,7 @@
     self.triggerController = [OSTriggerController new];
     self.triggerController.delegate = self;
     self.messageDisplayQueue = [NSMutableArray new];
+    self.currentPromptAction = nil;
 }
 
 @end
@@ -72,6 +74,10 @@ static NSMutableArray<OSInAppMessage *> *_displayedMessages;
 
 + (void)reset {
     [_displayedMessages removeAllObjects];
+}
+
++ (BOOL)currentPromptAppear {
+    return OSMessagingController.sharedInstance.currentPromptAction.didAppear;
 }
 
 + (BOOL)isInAppMessageShowing {

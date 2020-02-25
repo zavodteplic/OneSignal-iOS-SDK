@@ -26,6 +26,7 @@
  */
 
 #import "OSInAppMessageAction.h"
+#import "OSInAppMessagePushPrompt.h"
 
 @implementation OSInAppMessageAction
 
@@ -70,7 +71,26 @@
     else
         action.closesMessage = true; // Default behavior
     
+    NSMutableArray<NSObject<OSInAppMessagePrompt>*> *promptActions = [NSMutableArray new];
+    //TODO: when backend is ready check if key match
+    if ([json[@"prompts"] isKindOfClass:[NSArray class]]) {
+        NSArray<NSString *> *promptActionsStrings = json[@"prompts"];
+        
+        for (NSString *prompt in promptActionsStrings) {
+            if ([prompt isEqualToString:@"push"]) {
+                [promptActions addObject:[[OSInAppMessagePushPrompt alloc] init]];
+            }
+        }
+
+    }
+    action.promptActions = promptActions;
+
     return action;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"OSInAppMessageAction promptAction: %@", [_promptActions description]];
 }
 
 @end
